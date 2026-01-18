@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import UIKit
 
 // MARK: - Card Suit
 enum Suit: String, Codable, CaseIterable {
@@ -62,14 +61,24 @@ struct Card: Identifiable, Codable, Equatable {
     let suit: Suit
     let rank: Rank
     var isFaceUp: Bool
-    var position: CGPoint
+    var positionX: CGFloat
+    var positionY: CGFloat
     
     init(suit: Suit, rank: Rank, isFaceUp: Bool = false, position: CGPoint = .zero) {
         self.id = UUID()
         self.suit = suit
         self.rank = rank
         self.isFaceUp = isFaceUp
-        self.position = position
+        self.positionX = position.x
+        self.positionY = position.y
+    }
+    
+    var position: CGPoint {
+        get { CGPoint(x: positionX, y: positionY) }
+        set {
+            positionX = newValue.x
+            positionY = newValue.y
+        }
     }
     
     // Computed display name

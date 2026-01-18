@@ -1,5 +1,6 @@
 import SwiftUI
 import LocalAuthentication
+import Observation
 
 // MARK: - Pass & Play Coordinator
 @Observable

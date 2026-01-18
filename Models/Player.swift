@@ -1,4 +1,6 @@
 import Foundation
+import Observation
+import SwiftUI
 
 // MARK: - Player Model
 @Observable
@@ -29,6 +31,7 @@ class Player: Identifiable {
         hand.append(contentsOf: cards)
     }
     
+    @discardableResult
     func removeCard(_ card: Card) -> Card? {
         if let index = hand.firstIndex(where: { $0.id == card.id }) {
             return hand.remove(at: index)
@@ -93,8 +96,6 @@ enum PlayerColor: String, CaseIterable, Codable {
         }
     }
 }
-
-import SwiftUI
 
 // MARK: - Player Avatar Presets
 extension Player {
