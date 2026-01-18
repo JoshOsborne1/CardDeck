@@ -13,17 +13,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install XcodeGen
-        run: brew install xcodegen
-
-      - name: Generate Xcode Project
-        run: xcodegen generate
-
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
       - name: Show Xcode version
         run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: |
+          # Install specific version compatible with Xcode 15
+          brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: |
+          # Generate with explicit compatibility
+          xcodegen generate --spec project.yml
+
+          # Fix the project format if needed
+          sed -i '' 's/objectVersion = 77/objectVersion = 56/g' VirtualDeck.xcodeproj/project.pbxproj || true
 
       - name: List available schemes
         run: xcodebuild -project VirtualDeck.xcodeproj -list

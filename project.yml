@@ -3,6 +3,11 @@ options:
   bundleIdPrefix: com.virtualdeck
   deploymentTarget:
     iOS: "17.0"
+  xcodeVersion: "15.4"
+  minimumXcodeGenVersion: "2.38.0"
+
+settings:
+  SWIFT_VERSION: "5.0"
 
 targets:
   VirtualDeck:
@@ -22,4 +27,3 @@ targets:
       INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
       CODE_SIGN_STYLE: Manual
       CODE_SIGNING_ALLOWED: NO
-      SWIFT_VERSION: "5.0"
