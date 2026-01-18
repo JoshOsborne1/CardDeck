@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 // MARK: - Card Suit
 enum Suit: String, Codable, CaseIterable {
