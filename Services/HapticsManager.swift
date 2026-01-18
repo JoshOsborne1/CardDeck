@@ -3,9 +3,8 @@ import SwiftUI
 import UIKit
 
 // MARK: - Haptics Manager
-@MainActor
 class HapticsManager: ObservableObject {
-    static let shared = HapticsManager()
+    nonisolated(unsafe) static let shared = HapticsManager()
     
     private var engine: CHHapticEngine?
     private var supportsHaptics: Bool = false

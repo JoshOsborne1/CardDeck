@@ -3,9 +3,8 @@ import AudioToolbox
 import SwiftUI
 
 // MARK: - Sound Manager
-@MainActor
 class SoundManager: ObservableObject {
-    static let shared = SoundManager()
+    nonisolated(unsafe) static let shared = SoundManager()
     
     private var audioEngine: AVAudioEngine?
     private var playerNodes: [String: AVAudioPlayerNode] = [:]
@@ -63,11 +62,6 @@ class SoundManager: ObservableObject {
     private func loadSounds() {
         // In production, load from bundle
         // For now, using system sounds as placeholders
-        
-        // This would normally load .mp3/.wav files:
-        // if let url = Bundle.main.url(forResource: "card_draw", withExtension: "mp3") {
-        //     loadAudioBuffer(from: url, for: .cardDraw)
-        // }
     }
     
     private func loadAudioBuffer(from url: URL, for sound: SoundEffect) {
@@ -94,9 +88,6 @@ class SoundManager: ObservableObject {
         
         // Use system sound for now (will be replaced with custom sounds)
         playSystemSound(for: sound)
-        
-        // For spatial audio implementation:
-        // playSpatialSound(sound, at: spatialPosition)
     }
     
     private func playSystemSound(for sound: SoundEffect) {
