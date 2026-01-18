@@ -13,11 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
       - name: Show Xcode version
         run: xcodebuild -version
+
+      - name: List available schemes
+        run: xcodebuild -project VirtualDeck.xcodeproj -list
 
       - name: Build for iOS Simulator
         run: |
