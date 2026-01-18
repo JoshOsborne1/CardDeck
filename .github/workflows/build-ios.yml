@@ -57,14 +57,42 @@ jobs:
       - name: Upload to Appetize.io
         id: appetize
         run: |
-          RESPONSE=$(curl -s -X POST "https://api.appetize.io/v1/apps" \
-            -H "Authorization: Bearer ${{ secrets.APPETIZE_API_TOKEN }}" \
+          echo "Uploading VirtualDeck.zip to Appetize.io..."
+          echo "File size: $(ls -lh VirtualDeck.zip | awk '{print $5}')"
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "https://api.appetize.io/v1/apps" \
+            -H "X-API-KEY: ${{ secrets.APPETIZE_API_TOKEN }}" \
             -F "file=@VirtualDeck.zip" \
             -F "platform=ios")
 
-          echo "Appetize Response: $RESPONSE"
+          # Extract HTTP status code (last line) and response body
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
 
-          PUBLIC_KEY=$(echo $RESPONSE | jq -r '.publicKey')
+          echo "HTTP Status Code: $HTTP_CODE"
+          echo "Appetize Response: $BODY"
+
+          # Check for errors
+          if [[ "$HTTP_CODE" != "200" ]]; then
+            echo "### ❌ Appetize Upload Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**HTTP Status:** $HTTP_CODE" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Response:** \`$BODY\`" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+          # Check if publicKey is present
+          PUBLIC_KEY=$(echo "$BODY" | jq -r '.publicKey // empty')
+          if [[ -z "$PUBLIC_KEY" ]]; then
+            echo "### ❌ Appetize Upload Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Error:** No publicKey in response" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Response:** \`$BODY\`" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
           echo "PUBLIC_KEY=$PUBLIC_KEY" >> $GITHUB_OUTPUT
           echo "### 📱 App Deployed to Appetize!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
