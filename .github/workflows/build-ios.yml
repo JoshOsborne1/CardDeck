@@ -57,42 +57,54 @@ jobs:
           APP_PATH=$(find ./build -name "*.app" -type d | head -1)
           echo "Found app at: $APP_PATH"
 
-          # Verify app bundle structure
           echo "### App Bundle Verification ###"
-          echo "Bundle contents:"
-          ls -la "$APP_PATH/"
+          echo ""
+          echo "=== Full bundle listing ==="
+          find "$APP_PATH" -type f | head -50
+          echo ""
 
-          # Check for Info.plist
+          echo "=== Info.plist Check ==="
           if [ -f "$APP_PATH/Info.plist" ]; then
             echo "✅ Info.plist found"
-            echo "Info.plist contents:"
+            echo "Key values:"
+            /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP_PATH/Info.plist" 2>/dev/null || echo "No CFBundleIdentifier"
+            /usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$APP_PATH/Info.plist" 2>/dev/null || echo "No CFBundleExecutable"
+            /usr/libexec/PlistBuddy -c "Print :MinimumOSVersion" "$APP_PATH/Info.plist" 2>/dev/null || echo "No MinimumOSVersion"
+            echo ""
+            echo "Full Info.plist:"
             cat "$APP_PATH/Info.plist"
           else
             echo "❌ Missing Info.plist!"
             exit 1
           fi
+          echo ""
 
-          # Check for executable
+          echo "=== Executable Check ==="
           APP_NAME=$(basename "$APP_PATH" .app)
           if [ -f "$APP_PATH/$APP_NAME" ]; then
-            echo "✅ Executable found: $APP_NAME"
-            # Check architecture
+            echo "✅ Executable: $APP_NAME"
             file "$APP_PATH/$APP_NAME"
-            echo "Architecture info:"
             lipo -info "$APP_PATH/$APP_NAME" || true
+            ls -lh "$APP_PATH/$APP_NAME"
           else
             echo "❌ Missing executable!"
+            ls -la "$APP_PATH/"
             exit 1
           fi
+          echo ""
 
-          # Create the zip
+          echo "=== Assets Check ==="
+          ls -la "$APP_PATH/" | grep -E "Assets|car" || echo "No Assets.car"
+          echo ""
+
+          echo "=== Creating ZIP ==="
           cd $(dirname "$APP_PATH")
           zip -r VirtualDeck.zip $(basename "$APP_PATH")
           mv VirtualDeck.zip $GITHUB_WORKSPACE/
-
-          # Show final file size
-          echo "### Final Bundle Size ###"
           ls -lh $GITHUB_WORKSPACE/VirtualDeck.zip
+          echo ""
+          echo "=== ZIP Contents ==="
+          unzip -l $GITHUB_WORKSPACE/VirtualDeck.zip | head -30
 
       - name: Upload to Appetize.io
         id: appetize
