@@ -33,20 +33,23 @@ jobs:
           sed -i '' 's/objectVersion = 77/objectVersion = 56/g' VirtualDeck.xcodeproj/project.pbxproj || true
 
       - name: List available schemes
+        continue-on-error: true
         run: xcodebuild -project VirtualDeck.xcodeproj -list
 
       - name: Build for iOS Simulator (ARM64)
         run: |
+          # List available simulators
+          xcrun simctl list devices available
+
           xcodebuild build \
             -project VirtualDeck.xcodeproj \
             -scheme VirtualDeck \
             -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             -derivedDataPath ./build \
-            -arch arm64 \
-            ONLY_ACTIVE_ARCH=NO \
             ARCHS=arm64 \
+            VALID_ARCHS=arm64 \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Verify and zip the app
