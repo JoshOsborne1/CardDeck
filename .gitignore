@@ -1,0 +1,16 @@
+# Xcode
+build/
+*.xcodeproj/
+DerivedData/
+*.xcworkspace/
+
+# Build artifacts
+*.zip
+*.ipa
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+*.xcuserdata/

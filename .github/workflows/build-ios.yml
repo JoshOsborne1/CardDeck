@@ -35,7 +35,7 @@ jobs:
       - name: List available schemes
         run: xcodebuild -project VirtualDeck.xcodeproj -list
 
-      - name: Build for iOS Simulator
+      - name: Build for iOS Simulator (ARM64)
         run: |
           xcodebuild build \
             -project VirtualDeck.xcodeproj \
@@ -44,15 +44,52 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
             -configuration Debug \
             -derivedDataPath ./build \
+            -arch arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            ARCHS=arm64 \
             CODE_SIGNING_ALLOWED=NO
 
-      - name: Find and zip the app
+      - name: Verify and zip the app
         run: |
           APP_PATH=$(find ./build -name "*.app" -type d | head -1)
           echo "Found app at: $APP_PATH"
+
+          # Verify app bundle structure
+          echo "### App Bundle Verification ###"
+          echo "Bundle contents:"
+          ls -la "$APP_PATH/"
+
+          # Check for Info.plist
+          if [ -f "$APP_PATH/Info.plist" ]; then
+            echo "✅ Info.plist found"
+            echo "Info.plist contents:"
+            cat "$APP_PATH/Info.plist"
+          else
+            echo "❌ Missing Info.plist!"
+            exit 1
+          fi
+
+          # Check for executable
+          APP_NAME=$(basename "$APP_PATH" .app)
+          if [ -f "$APP_PATH/$APP_NAME" ]; then
+            echo "✅ Executable found: $APP_NAME"
+            # Check architecture
+            file "$APP_PATH/$APP_NAME"
+            echo "Architecture info:"
+            lipo -info "$APP_PATH/$APP_NAME" || true
+          else
+            echo "❌ Missing executable!"
+            exit 1
+          fi
+
+          # Create the zip
           cd $(dirname "$APP_PATH")
           zip -r VirtualDeck.zip $(basename "$APP_PATH")
           mv VirtualDeck.zip $GITHUB_WORKSPACE/
+
+          # Show final file size
+          echo "### Final Bundle Size ###"
+          ls -lh $GITHUB_WORKSPACE/VirtualDeck.zip
 
       - name: Upload to Appetize.io
         id: appetize
