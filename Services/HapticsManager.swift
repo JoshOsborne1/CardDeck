@@ -1,4 +1,5 @@
 import CoreHaptics
+import SwiftUI
 import UIKit
 
 // MARK: - Haptics Manager
