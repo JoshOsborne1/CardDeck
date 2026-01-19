@@ -51,7 +51,8 @@ struct PlayerHandView: View {
       // Privacy blur overlay
       if isBlurred {
         ZStack {
-          Material.ultraThin
+          Rectangle()
+            .fill(.ultraThinMaterial)
             .ignoresSafeArea()
 
           Color.black.opacity(0.4)
@@ -318,7 +319,7 @@ struct PlayerHandView: View {
       .background(
         ZStack {
           Color.black.opacity(0.6)
-          Material.ultraThin
+          Rectangle().fill(.ultraThinMaterial)
         }
       )
       .clipShape(RoundedRectangle(cornerRadius: 16))
