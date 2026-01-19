@@ -18,6 +18,7 @@ targets:
       - path: Views
       - path: ViewModels
       - path: Services
+      - path: Extensions
     resources:
       - path: Resources
         buildPhase: resources
