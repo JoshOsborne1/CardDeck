@@ -29,7 +29,7 @@ struct GlassButton: View {
       .background(
         ZStack {
           // Glass background
-          Material.ultraThin
+          Rectangle().fill(.ultraThinMaterial)
 
           // Subtle tint
           color.opacity(0.15)
