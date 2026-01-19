@@ -8,7 +8,7 @@ struct GlassButton: View {
 
   var body: some View {
     Button(action: {
-      HapticsManager.trigger(.light)
+      HapticsManager.shared.playImpactHaptic(style: .light)
       action()
     }) {
       HStack(spacing: 8) {
