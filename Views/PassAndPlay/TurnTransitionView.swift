@@ -40,7 +40,7 @@ struct TurnTransitionView: View {
             .shadow(color: .black.opacity(0.3), radius: 4)
 
           // Card count badge
-          GlassCard(width: nil, height: nil) {
+          GlassCard {
             HStack(spacing: 8) {
               Image(systemName: "rectangle.3.group.fill")
                 .font(.system(size: 14))

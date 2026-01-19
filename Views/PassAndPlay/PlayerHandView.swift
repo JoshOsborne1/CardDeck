@@ -1,6 +1,5 @@
 // MARK: - Player Hand View
 import CoreMotion
-
 import SwiftUI
 
 // MARK: - Hand Layout
@@ -106,7 +105,7 @@ struct PlayerHandView: View {
   private var headerView: some View {
     HStack {
       // Player info
-      GlassCard(width: nil, height: 60) {
+      GlassCard {
         HStack(spacing: 12) {
           Image(systemName: coordinator.currentPlayer.avatar)
             .font(.system(size: 24))
@@ -243,7 +242,7 @@ struct PlayerHandView: View {
     ScrollView {
       VStack(spacing: 12) {
         ForEach(coordinator.currentPlayer.hand) { card in
-          GlassCard(width: nil, height: 60) {
+          GlassCard {
             HStack {
               Text(card.displayName)
                 .font(.system(size: 18, weight: .bold))
